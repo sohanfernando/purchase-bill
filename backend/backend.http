@@ -1,0 +1,40 @@
+@backend_HostAddress = http://localhost:5000
+
+### Log in (copy "accessToken" from the response into @accessToken below)
+POST {{backend_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "your-email@example.com",
+  "password": "your-password"
+}
+
+###
+@accessToken = paste-access-token-here
+
+### Locations saved for the signed-in company
+GET {{backend_HostAddress}}/api/locations
+Authorization: Bearer {{accessToken}}
+
+### Item names for the autocomplete
+GET {{backend_HostAddress}}/api/purchase-bills/item-options
+Authorization: Bearer {{accessToken}}
+
+### Purchase bill items
+GET {{backend_HostAddress}}/api/purchase-bills/items
+Authorization: Bearer {{accessToken}}
+
+### Add a purchase bill item (use a Location_Code returned by /api/locations)
+POST {{backend_HostAddress}}/api/purchase-bills/items
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "itemName": "Mango",
+  "batchLocationCode": "EZCMP1/EZLOC-19",
+  "standardCost": 100,
+  "standardPrice": 150,
+  "quantity": 5,
+  "freeQuantity": 0,
+  "discountPercent": 20
+}

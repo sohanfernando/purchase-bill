@@ -1,0 +1,54 @@
+:host {
+  display: block;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid #e7ecf2;
+}
+
+th {
+  background: #f6f9fc;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+tbody tr:hover {
+  background: #f9fbfd;
+}
+
+.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-state {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.table-state app-spinner {
+  margin-right: 8px;
+  vertical-align: middle;
+}

@@ -1,0 +1,16 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Local runtime data
+**/.data-protection-keys/
+
+# IDE files
+.vs/
+*.user
+*.suo

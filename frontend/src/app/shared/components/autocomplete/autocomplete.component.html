@@ -1,0 +1,46 @@
+<div class="autocomplete">
+  <input
+    type="text"
+    role="combobox"
+    autocomplete="off"
+    aria-autocomplete="list"
+    [id]="inputId()"
+    [placeholder]="placeholder()"
+    [value]="query()"
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-controls]="listboxId()"
+    [attr.aria-activedescendant]="activeIndex() >= 0 ? optionId(activeIndex()) : null"
+    (input)="onInput($event)"
+    (focus)="open()"
+    (click)="open()"
+    (blur)="onBlur()"
+    (keydown)="onKeydown($event)"
+  />
+  <svg class="field-icon autocomplete__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="1.8" aria-hidden="true" focusable="false">
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.5-3.5" />
+  </svg>
+
+  @if (isOpen()) {
+    <ul class="autocomplete__list" role="listbox" [id]="listboxId()">
+      @for (option of filteredOptions(); track option; let index = $index) {
+        <!-- mousedown is cancelled so the input keeps focus until the click selects the option. -->
+        <li
+          role="option"
+          class="autocomplete__option"
+          [id]="optionId(index)"
+          [class.autocomplete__option--active]="index === activeIndex()"
+          [attr.aria-selected]="index === activeIndex()"
+          (mousedown)="$event.preventDefault()"
+          (click)="select(option)"
+        >
+          {{ option }}
+        </li>
+      } @empty {
+        <li class="autocomplete__empty">No matching items</li>
+      }
+    </ul>
+  }
+</div>

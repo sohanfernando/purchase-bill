@@ -1,0 +1,127 @@
+:root {
+  --color-primary: #2f80d1;
+  --color-primary-dark: #2459a6;
+  --color-success: #2e9d5b;
+  --color-danger: #c62828;
+  --color-danger-bg: #fdecec;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-border: #d7dee8;
+  --color-surface: #ffffff;
+  --color-background: #f3f6fa;
+  --color-readonly: #eef1f5;
+  --radius: 6px;
+  --font-family: 'Segoe UI', Roboto, Arial, Helvetica, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Controls projected into <app-form-field> share the underlined look from the designs. */
+app-form-field :is(input, select) {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
+app-form-field input[type='number'] {
+  text-align: right;
+}
+
+app-form-field input[readonly] {
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.field-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn--success {
+  background: var(--color-success);
+  color: #ffffff;
+}
+
+.btn--light {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  color: var(--color-primary);
+}
+
+.btn:focus-visible,
+.icon-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
