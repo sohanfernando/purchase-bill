@@ -5,6 +5,8 @@ A two-page web application built for the Enhanzer Full Stack Developer assignmen
 - **Login** authenticates against the Enhanzer POS API through the backend, saves the returned `User_Locations` to the `Location_Details` table and issues a JWT.
 - **Purchase Bill** is only available after login. It has an item autocomplete, a batch dropdown filled from `Location_Details`, live Margin / Total Cost / Total Selling calculations, an items table and an item summary.
 
+**Live demo:** https://purchase-bill-web-143718592205.asia-southeast1.run.app. Log in with the credentials supplied with the assignment. The site sleeps when idle, so the first request after a quiet period can take a few seconds.
+
 ## Tech stack
 
 | Layer    | Technology                                                                              |
@@ -92,6 +94,27 @@ npm test -- --watch=false
 | POST   | `/api/purchase-bills/items`          | JWT  | Validates, calculates and saves a purchase bill item          |
 
 Errors are returned as RFC 7807 problem details. Validation errors include an `errors` object keyed by field name, which the Angular form shows under the matching field.
+
+## Deployment
+
+The live demo runs on Google Cloud in `asia-southeast1` (Singapore):
+
+| Part     | Service                                                                                         |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| Frontend | Cloud Run service `purchase-bill-web`: nginx serving the Angular build (`frontend/Dockerfile`, `frontend/nginx.conf`) |
+| API      | Cloud Run service `purchase-bill-api` (`backend/Dockerfile`)                                    |
+| Database | Cloud SQL for SQL Server 2022 Express, created with `backend/Database/EnhanzerProjectDb.sql`    |
+| CI/CD    | Cloud Build triggers: every push to `main` rebuilds and redeploys both services                 |
+
+The API's secrets are Cloud Run environment variables, never stored in the repository:
+
+| Variable                               | Purpose                                         |
+| -------------------------------------- | ----------------------------------------------- |
+| `ConnectionStrings__DefaultConnection` | Cloud SQL connection string (encrypted connection) |
+| `Jwt__Key`                             | Token signing key                               |
+| `Cors__AllowedOrigins__0`              | The frontend URL allowed to call the API        |
+
+Both images can also be built locally: `docker build -t purchase-bill-api backend` and `docker build -t purchase-bill-web frontend`.
 
 ## Design notes
 
