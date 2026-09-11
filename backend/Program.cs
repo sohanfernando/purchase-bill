@@ -10,6 +10,7 @@ using EnhanzerProject.Security;
 using EnhanzerProject.Services;
 using EnhanzerProject.Services.Impl;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -50,6 +51,15 @@ builder.Services.AddCors(options => options.AddPolicy(CorsPolicyName, policy => 
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // Hosting proxies such as Google Cloud Run terminate HTTPS and forward requests over HTTP.
+    // Reading these headers restores the original scheme and the client IP used by the rate limiter.
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -75,7 +85,13 @@ builder.Services.AddRateLimiter(options =>
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        // Cloud databases can drop connections briefly (maintenance, network blips); retry those errors.
+        sqlServer => sqlServer.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null)));
 
 builder.Services.AddOptions<JwtOptions>()
     .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
@@ -143,6 +159,7 @@ if (app.Configuration.GetValue<bool>("Database:EnsureCreatedOnStartup"))
     await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.EnsureCreatedAsync();
 }
 
+app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 

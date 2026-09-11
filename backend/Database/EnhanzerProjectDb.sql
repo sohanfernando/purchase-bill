@@ -9,6 +9,9 @@
     so each account only sees its own locations and purchase bill items.
 
     The script is idempotent and can be run more than once.
+
+    Google Cloud SQL for SQL Server: connect with SSMS as the sqlserver user and run the
+    script as-is; it creates the database and both tables.
 */
 
 IF DB_ID(N'EnhanzerProjectDb') IS NULL
