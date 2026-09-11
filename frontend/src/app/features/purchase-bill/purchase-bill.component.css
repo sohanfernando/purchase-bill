@@ -1,14 +1,16 @@
 :host {
   display: block;
   min-height: 100vh;
+  min-height: 100dvh;
 }
+
+/* ---------- Header ---------- */
 
 .page-header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px 16px;
+  gap: 16px;
   padding: 14px 24px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
   color: #ffffff;
@@ -18,6 +20,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .page-header__title svg {
@@ -39,14 +42,20 @@
 
 .page-header__user {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 12px;
   font-size: 0.875rem;
 }
 
 .page-header__email {
-  overflow-wrap: anywhere;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+/* ---------- Layout ---------- */
 
 .page-body {
   display: grid;
@@ -65,6 +74,10 @@
   border-radius: 8px;
 }
 
+.items-card {
+  container: items-card / inline-size;
+}
+
 .card__title {
   display: inline-block;
   margin: 0 0 18px;
@@ -74,15 +87,21 @@
   color: var(--color-primary);
 }
 
-.item-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 18px 20px;
-  margin-bottom: 20px;
+.page-alert {
+  margin-bottom: 16px;
 }
 
-.item-form__wide {
-  grid-column: span 2;
+/* ---------- Item form ---------- */
+
+/*
+ * The columns follow the width of the Items card (container queries), so the form adapts
+ * whether the summary sits beside the card (desktop) or above it (tablet and phone).
+ */
+.item-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .item-form__actions {
@@ -90,27 +109,91 @@
   align-items: flex-end;
 }
 
-.page-alert {
-  margin-bottom: 16px;
+.item-form__actions .btn {
+  width: 100%;
 }
 
-@media (max-width: 960px) {
-  .page-body {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .page-header,
-  .page-body {
-    padding-inline: 16px;
-  }
-
+@container items-card (min-width: 240px) {
   .item-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .item-form__wide,
+  .item-form__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@container items-card (min-width: 560px) {
+  .item-form {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px 20px;
   }
 
   .item-form__wide {
+    grid-column: span 2;
+  }
+
+  .item-form__actions {
+    justify-content: flex-end;
+  }
+
+  .item-form__actions .btn {
+    width: auto;
+  }
+}
+
+/* Like the design: Item, Batch, prices, Margin and Qty on the first row; the rest and Add on the second. */
+@container items-card (min-width: 880px) {
+  .item-form {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 18px 16px;
+  }
+
+  .item-form__actions {
     grid-column: auto;
+    justify-content: flex-start;
+  }
+}
+
+/* ---------- Breakpoints ---------- */
+
+/* Tablets and phones: stack the cards and show the totals above the form so they stay in view. */
+@media (max-width: 1024px) {
+  .page-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .summary-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .page-header {
+    padding: 12px 16px;
+  }
+
+  .page-header__email {
+    display: none;
+  }
+
+  .page-body {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .page-header h1 {
+    font-size: 1.05rem;
+  }
+
+  .page-header p {
+    display: none;
   }
 }

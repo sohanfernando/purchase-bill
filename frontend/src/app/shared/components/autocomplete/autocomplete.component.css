@@ -49,3 +49,10 @@
   font-size: 0.85rem;
   color: var(--color-text-muted);
 }
+
+/* Touch screens: taller options that are easier to tap. */
+@media (pointer: coarse) {
+  .autocomplete__option {
+    padding-block: 12px;
+  }
+}

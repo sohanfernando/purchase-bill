@@ -46,6 +46,13 @@
   background: var(--color-readonly);
 }
 
+/* Touch screens: 44px minimum touch target. */
+@media (pointer: coarse) {
+  .form-field__control {
+    min-height: 44px;
+  }
+}
+
 .form-field__error {
   margin: 4px 0 0;
   font-size: 0.75rem;

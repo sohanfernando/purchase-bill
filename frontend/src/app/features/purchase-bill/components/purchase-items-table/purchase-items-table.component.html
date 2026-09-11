@@ -1,48 +1,61 @@
-<div class="table-wrapper">
-  <table>
+<!--
+  Scrolls sideways on wide screens (focusable so keyboard users can scroll it);
+  on narrow screens every row is shown as a card (see the CSS).
+-->
+<section class="table-wrapper" aria-label="Purchase bill items" tabindex="0">
+  <!-- Explicit roles keep the table semantics when the card layout changes how these elements are displayed. -->
+  <table role="table">
     <caption class="visually-hidden">Purchase bill items</caption>
-    <thead>
-      <tr>
-        <th scope="col">Item</th>
-        <th scope="col">Batch</th>
-        <th scope="col" class="numeric">Standard Cost</th>
-        <th scope="col" class="numeric">Standard Price</th>
-        <th scope="col" class="numeric">Margin</th>
-        <th scope="col" class="numeric">Qty</th>
-        <th scope="col" class="numeric">Free Qty</th>
-        <th scope="col" class="numeric">Discount %</th>
-        <th scope="col" class="numeric">Total Cost</th>
-        <th scope="col" class="numeric">Total Selling</th>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th scope="col" role="columnheader" class="cell--item">Item</th>
+        <th scope="col" role="columnheader">Batch</th>
+        <th scope="col" role="columnheader" class="numeric">Standard Cost</th>
+        <th scope="col" role="columnheader" class="numeric">Standard Price</th>
+        <th scope="col" role="columnheader" class="numeric">Margin</th>
+        <th scope="col" role="columnheader" class="numeric">Qty</th>
+        <th scope="col" role="columnheader" class="numeric">Free Qty</th>
+        <th scope="col" role="columnheader" class="numeric">Discount %</th>
+        <th scope="col" role="columnheader" class="numeric">Total Cost</th>
+        <th scope="col" role="columnheader" class="numeric">Total Selling</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody role="rowgroup">
       @if (isLoading()) {
-        <tr>
-          <td class="table-state" colspan="10">
+        <tr role="row" class="state-row">
+          <td role="cell" class="table-state" colspan="10">
             <app-spinner size="small" label="Loading items" />
             <span>Loading items...</span>
           </td>
         </tr>
       } @else {
         @for (item of items(); track item.id) {
-          <tr>
-            <td>{{ item.itemName }}</td>
-            <td [title]="item.batchLocationCode">{{ item.batchLocationName }}</td>
-            <td class="numeric">{{ item.standardCost | number: '1.2-2' }}</td>
-            <td class="numeric">{{ item.standardPrice | number: '1.2-2' }}</td>
-            <td class="numeric">{{ item.margin | number: '1.2-2' }}</td>
-            <td class="numeric">{{ item.quantity | number }}</td>
-            <td class="numeric">{{ item.freeQuantity | number }}</td>
-            <td class="numeric">{{ item.discountPercent | number: '1.2-2' }}</td>
-            <td class="numeric">{{ item.totalCost | number: '1.2-2' }}</td>
-            <td class="numeric">{{ item.totalSelling | number: '1.2-2' }}</td>
+          <tr role="row">
+            <td role="cell" class="cell--item" data-label="Item">{{ item.itemName }}</td>
+            <td role="cell" class="cell--batch" data-label="Batch" [title]="item.batchLocationCode">
+              {{ item.batchLocationName }}
+            </td>
+            <td role="cell" class="numeric" data-label="Standard Cost">{{ item.standardCost | number: '1.2-2' }}</td>
+            <td role="cell" class="numeric" data-label="Standard Price">{{ item.standardPrice | number: '1.2-2' }}</td>
+            <td role="cell" class="numeric" data-label="Margin">{{ item.margin | number: '1.2-2' }}</td>
+            <td role="cell" class="numeric" data-label="Qty">{{ item.quantity | number }}</td>
+            <td role="cell" class="numeric" data-label="Free Qty">{{ item.freeQuantity | number }}</td>
+            <td role="cell" class="numeric" data-label="Discount %">{{ item.discountPercent | number: '1.2-2' }}</td>
+            <td role="cell" class="numeric cell--total" data-label="Total Cost">
+              {{ item.totalCost | number: '1.2-2' }}
+            </td>
+            <td role="cell" class="numeric cell--total" data-label="Total Selling">
+              {{ item.totalSelling | number: '1.2-2' }}
+            </td>
           </tr>
         } @empty {
-          <tr>
-            <td class="table-state" colspan="10">No items yet. Use the form above to add the first item.</td>
+          <tr role="row" class="state-row">
+            <td role="cell" class="table-state" colspan="10">
+              No items yet. Use the form above to add the first item.
+            </td>
           </tr>
         }
       }
     </tbody>
   </table>
-</div>
+</section>

@@ -1,5 +1,7 @@
 :host {
   display: block;
+  /* The layout switches on the summary's own width, not the viewport. */
+  container-type: inline-size;
 }
 
 .summary__title {
@@ -41,4 +43,26 @@ dd {
   margin: 0;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+/* Room for two tiles (the summary spans the page on tablets and phones): show the totals side by side. */
+@container (min-width: 260px) {
+  .summary__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 200px));
+    gap: 12px;
+  }
+
+  .summary__row {
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    border: 1px solid #eef1f5;
+    border-radius: var(--radius);
+    background: #f9fbfd;
+  }
+
+  dd {
+    font-size: 1.25rem;
+  }
 }

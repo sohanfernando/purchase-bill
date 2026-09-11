@@ -26,6 +26,12 @@ body {
   min-height: 100%;
 }
 
+/* Stop mobile browsers from enlarging text when the device is rotated. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-family);
   color: var(--color-text);
@@ -112,6 +118,18 @@ app-form-field input[readonly] {
 .icon-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Touch screens: 44px minimum touch targets. */
+@media (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+  }
+
+  .icon-button {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .visually-hidden {

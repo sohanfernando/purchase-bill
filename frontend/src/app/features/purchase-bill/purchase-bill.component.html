@@ -13,14 +13,14 @@
 
   <div class="page-header__user">
     @if (userEmail(); as email) {
-      <span class="page-header__email">{{ email }}</span>
+      <span class="page-header__email" [title]="email">{{ email }}</span>
     }
     <button type="button" class="btn btn--light" (click)="logout()">Logout</button>
   </div>
 </header>
 
 <main class="page-body">
-  <section class="card" aria-labelledby="items-heading">
+  <section class="card items-card" aria-labelledby="items-heading">
     <h2 id="items-heading" class="card__title">Items</h2>
 
     @if (loadError(); as error) {
@@ -174,7 +174,7 @@
     <app-purchase-items-table [items]="items()" [isLoading]="isLoading()" />
   </section>
 
-  <aside class="card">
+  <aside class="card summary-card">
     <app-item-summary [totalItems]="summary().totalItems" [totalQuantity]="summary().totalQuantity" />
   </aside>
 </main>
