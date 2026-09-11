@@ -95,7 +95,7 @@ Errors are returned as RFC 7807 problem details. Validation errors include an `e
 
 ## Design notes
 
-- **Login flow.** The Angular app never calls the POS API directly. The backend sends the required `GetLoginData` payload (the email is used as both `Company_Code` and `Username`), treats `Status_Code` 401 as invalid credentials, upserts the returned locations and signs a JWT.
+- **Login flow.** The Angular app never calls the POS API directly. The backend sends the required `GetLoginData` payload (the email is used as both `Company_Code` and `Username`), treats `Status_Code` 401 (unknown account) or a `Doc_Msg` such as "Invalid Login Details" (wrong password) as invalid credentials, upserts the returned locations and signs a JWT.
 - **Session.** The JWT is kept in `sessionStorage`, so it is cleared when the tab closes and is not shared between tabs. Route guards protect the Purchase Bill page, the HTTP interceptor adds the bearer token, and a `401` from the API signs the user out. An HttpOnly cookie would also protect the token from XSS, but it needs CSRF protection; `sessionStorage` keeps this assignment simpler.
 - **Data scoping.** Rows in `Location_Details` and `Purchase_Bill_Items` store the login email as `Company_Code`, so each account only sees its own locations and items.
 - **Calculations.** `Total Cost = Standard Cost × Qty × (1 − Discount % / 100)`, `Total Selling = Standard Price × Qty` and `Margin = Standard Price − Standard Cost`. The form previews them live; the API recalculates and stores the final values.

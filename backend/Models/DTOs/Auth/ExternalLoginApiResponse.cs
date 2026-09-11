@@ -22,6 +22,10 @@ public sealed class ExternalLoginUser
 {
     [JsonPropertyName("User_Locations")]
     public List<ExternalLoginLocation>? UserLocations { get; init; }
+
+    /// <summary>Set instead of the user details when the login is rejected, e.g. "Invalid Login Details".</summary>
+    [JsonPropertyName("Doc_Msg")]
+    public string? DocMessage { get; init; }
 }
 
 public sealed class ExternalLoginLocation

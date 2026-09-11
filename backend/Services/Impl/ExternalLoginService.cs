@@ -15,6 +15,7 @@ public sealed class ExternalLoginService(
 {
     private const string ServiceUnavailableMessage = "The authentication service is currently unavailable. Please try again later.";
     private const string InvalidResponseMessage = "The authentication service returned an unexpected response.";
+    private const string InvalidCredentialsMessage = "Invalid email or password.";
 
     public async Task<ExternalLoginResult> AuthenticateAsync(string email, string password, CancellationToken cancellationToken)
     {
@@ -72,7 +73,7 @@ public sealed class ExternalLoginService(
         // The external API always answers HTTP 200 and reports the real outcome in Status_Code.
         if (apiResponse.StatusCode is (int)HttpStatusCode.Unauthorized or (int)HttpStatusCode.Forbidden)
         {
-            return ExternalLoginResult.Failed(ExternalLoginFailureReason.InvalidCredentials, "Invalid email or password.");
+            return ExternalLoginResult.Failed(ExternalLoginFailureReason.InvalidCredentials, InvalidCredentialsMessage);
         }
 
         if (apiResponse.StatusCode != (int)HttpStatusCode.OK)
@@ -86,7 +87,8 @@ public sealed class ExternalLoginService(
                 : ExternalLoginResult.Failed(ExternalLoginFailureReason.InvalidResponse, InvalidResponseMessage);
         }
 
-        var locations = (apiResponse.ResponseBody ?? [])
+        var users = apiResponse.ResponseBody ?? [];
+        var locations = users
             .SelectMany(user => user.UserLocations ?? [])
             .Where(location => !string.IsNullOrWhiteSpace(location.LocationCode)
                 && !string.IsNullOrWhiteSpace(location.LocationName))
@@ -94,11 +96,25 @@ public sealed class ExternalLoginService(
             .DistinctBy(location => location.LocationCode, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        return locations.Count > 0
-            ? ExternalLoginResult.Succeeded(locations)
-            : ExternalLoginResult.Failed(
-                ExternalLoginFailureReason.NoLocations,
-                "Your account does not have any locations assigned.");
+        if (locations.Count > 0)
+        {
+            return ExternalLoginResult.Succeeded(locations);
+        }
+
+        // For an existing account with a wrong password the API still answers Status_Code 200,
+        // but the user entry only contains a Doc_Msg such as "Invalid Login Details".
+        var rejectionMessage = users
+            .Select(user => user.DocMessage)
+            .FirstOrDefault(message => !string.IsNullOrWhiteSpace(message));
+        if (rejectionMessage is not null)
+        {
+            logger.LogInformation("External login service rejected the login: {Reason}", rejectionMessage);
+            return ExternalLoginResult.Failed(ExternalLoginFailureReason.InvalidCredentials, InvalidCredentialsMessage);
+        }
+
+        return ExternalLoginResult.Failed(
+            ExternalLoginFailureReason.NoLocations,
+            "Your account does not have any locations assigned.");
     }
 
     private async Task<HttpResponseMessage> PostWithRetryAsync(

@@ -44,4 +44,4 @@ Swagger: `http://localhost:5000/swagger`. Example requests are in [backend.http]
 }
 ```
 
-The POS API always answers HTTP 200 and reports the result in `Status_Code` (`401` for invalid credentials). On success, every `User_Locations` entry is upserted into `Location_Details` and the API returns an 8-hour JWT. Send it as `Authorization: Bearer <accessToken>` to call the protected endpoints.
+The POS API always answers HTTP 200. An unknown account is reported with `Status_Code` 401, while a wrong password for an existing account returns `Status_Code` 200 with a user entry that only contains `"Doc_Msg": "Invalid Login Details"`; both are returned to the client as 401 "Invalid email or password.". On success, every `User_Locations` entry is upserted into `Location_Details` and the API returns an 8-hour JWT. Send it as `Authorization: Bearer <accessToken>` to call the protected endpoints.
