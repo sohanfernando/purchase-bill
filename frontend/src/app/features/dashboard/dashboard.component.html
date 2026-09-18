@@ -1,0 +1,53 @@
+<app-page-header
+  title="Dashboard"
+  subtitle="Your purchase orders at a glance"
+  [email]="userEmail()"
+  (logout)="logout()"
+/>
+
+<main class="page-body">
+  @if (loadError(); as error) {
+    <app-alert class="page-alert" [message]="error" actionLabel="Retry" (action)="loadDashboard()" />
+  }
+
+  @if (isLoading()) {
+    <p class="loading-row">
+      <app-spinner size="small" label="Loading dashboard" />
+      <span>Loading dashboard...</span>
+    </p>
+  } @else if (data(); as dashboard) {
+    @if (isEmpty()) {
+      <section class="card empty-card">
+        <h2>No purchase orders yet</h2>
+        <p>Save your first purchase order and the widgets below will fill up.</p>
+        <a class="btn btn--primary" routerLink="/purchase-order">Create a purchase order</a>
+      </section>
+    }
+
+    <div class="widgets">
+      <section class="card widget" aria-labelledby="widget-latest-orders">
+        <header class="widget__head">
+          <h2 id="widget-latest-orders" class="widget__title">Latest Purchase Orders</h2>
+          <span class="widget__badge">Last {{ dashboard.latestOrders.length }}</span>
+        </header>
+        <app-latest-orders-widget [orders]="dashboard.latestOrders" />
+      </section>
+
+      <section class="card widget" aria-labelledby="widget-oldest-items">
+        <header class="widget__head">
+          <h2 id="widget-oldest-items" class="widget__title">Oldest Order Items</h2>
+          <span class="widget__badge">{{ dashboard.oldestItems.length }} items</span>
+        </header>
+        <app-oldest-items-widget [items]="dashboard.oldestItems" />
+      </section>
+
+      <section class="card widget widget--wide" aria-labelledby="widget-item-quantities">
+        <header class="widget__head">
+          <h2 id="widget-item-quantities" class="widget__title">Quantity by Item</h2>
+          <span class="widget__badge">{{ dashboard.itemQuantities.length }} items</span>
+        </header>
+        <app-item-quantity-donut [data]="dashboard.itemQuantities" />
+      </section>
+    </div>
+  }
+</main>

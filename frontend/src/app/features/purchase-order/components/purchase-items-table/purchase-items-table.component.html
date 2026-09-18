@@ -1,0 +1,63 @@
+<!--
+  Scrolls sideways on wide screens (focusable so keyboard users can scroll it);
+  on narrow screens every row is shown as a card (see the CSS).
+-->
+<section class="table-wrapper" aria-label="Items in this order" tabindex="0">
+  <!-- Explicit roles keep the table semantics when the card layout changes how these elements are displayed. -->
+  <table role="table">
+    <caption class="visually-hidden">Items in this order</caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th scope="col" role="columnheader" class="cell--item">Item</th>
+        <th scope="col" role="columnheader">Batch</th>
+        <th scope="col" role="columnheader" class="numeric">Standard Cost</th>
+        <th scope="col" role="columnheader" class="numeric">Standard Price</th>
+        <th scope="col" role="columnheader" class="numeric">Margin</th>
+        <th scope="col" role="columnheader" class="numeric">Qty</th>
+        <th scope="col" role="columnheader" class="numeric">Free Qty</th>
+        <th scope="col" role="columnheader" class="numeric">Discount %</th>
+        <th scope="col" role="columnheader" class="numeric">Total Cost</th>
+        <th scope="col" role="columnheader" class="numeric">Total Selling</th>
+        <th scope="col" role="columnheader"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      @for (line of lines(); track line.tempId) {
+        <tr role="row">
+          <td role="cell" class="cell--item" data-label="Item">{{ line.itemName }}</td>
+          <td role="cell" class="cell--batch" data-label="Batch" [title]="line.batchLocationCode">
+            {{ line.batchLocationName }}
+          </td>
+          <td role="cell" class="numeric" data-label="Standard Cost">{{ line.standardCost | number: '1.2-2' }}</td>
+          <td role="cell" class="numeric" data-label="Standard Price">{{ line.standardPrice | number: '1.2-2' }}</td>
+          <td role="cell" class="numeric" data-label="Margin">{{ line.margin | number: '1.2-2' }}</td>
+          <td role="cell" class="numeric" data-label="Qty">{{ line.quantity | number }}</td>
+          <td role="cell" class="numeric" data-label="Free Qty">{{ line.freeQuantity | number }}</td>
+          <td role="cell" class="numeric" data-label="Discount %">{{ line.discountPercent | number: '1.2-2' }}</td>
+          <td role="cell" class="numeric cell--total" data-label="Total Cost">
+            {{ line.totalCost | number: '1.2-2' }}
+          </td>
+          <td role="cell" class="numeric cell--total" data-label="Total Selling">
+            {{ line.totalSelling | number: '1.2-2' }}
+          </td>
+          <td role="cell" class="cell--actions">
+            <button
+              type="button"
+              class="remove-button"
+              [attr.aria-label]="'Remove ' + line.itemName"
+              (click)="remove.emit(line.tempId)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr role="row" class="state-row">
+          <td role="cell" class="table-state" colspan="11">
+            No items yet. Add items above, then save them as one purchase order.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

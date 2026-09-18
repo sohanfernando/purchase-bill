@@ -9,21 +9,28 @@ export const routes: Routes = [
     loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'purchase-bill',
-    title: 'Purchase Bill | Enhanzer',
+    path: 'dashboard',
+    title: 'Dashboard | Enhanzer',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/purchase-bill/purchase-bill.component').then(
-        (m) => m.PurchaseBillComponent,
+      import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+  },
+  {
+    path: 'purchase-order',
+    title: 'Purchase Order | Enhanzer',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/purchase-order/purchase-order.component').then(
+        (m) => m.PurchaseOrderComponent,
       ),
   },
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'purchase-bill',
+    redirectTo: 'dashboard',
   },
   {
     path: '**',
-    redirectTo: 'purchase-bill',
+    redirectTo: 'dashboard',
   },
 ];

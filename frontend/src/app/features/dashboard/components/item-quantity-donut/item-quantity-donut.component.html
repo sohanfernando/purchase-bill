@@ -1,0 +1,38 @@
+@if (totalQuantity() === 0) {
+  <p class="donut-empty">No items yet.</p>
+} @else {
+  <div class="donut-layout">
+    <div class="donut-chart">
+      <svg viewBox="0 0 42 42" role="img" [attr.aria-label]="chartLabel()">
+        <circle class="donut__track" cx="21" cy="21" r="15.915" pathLength="100" />
+        @for (slice of slices(); track slice.itemName) {
+          <circle
+            class="donut__slice"
+            cx="21"
+            cy="21"
+            r="15.915"
+            pathLength="100"
+            [attr.stroke]="slice.color"
+            [attr.stroke-dasharray]="slice.percent + ' ' + (100 - slice.percent)"
+            [attr.stroke-dashoffset]="slice.dashOffset"
+          />
+        }
+      </svg>
+      <div class="donut-centre" aria-hidden="true">
+        <span class="donut-centre__value">{{ totalQuantity() | number }}</span>
+        <span class="donut-centre__label">Total qty</span>
+      </div>
+    </div>
+
+    <ul class="donut-legend">
+      @for (slice of slices(); track slice.itemName) {
+        <li class="donut-legend__row">
+          <span class="donut-legend__dot" [style.background]="slice.color" aria-hidden="true"></span>
+          <span class="donut-legend__name">{{ slice.itemName }}</span>
+          <span class="donut-legend__value">{{ slice.quantity | number }}</span>
+          <span class="donut-legend__percent">{{ slice.percent | number: '1.0-0' }}%</span>
+        </li>
+      }
+    </ul>
+  </div>
+}

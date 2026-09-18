@@ -1,0 +1,14 @@
+<ul class="item-list">
+  @for (item of items(); track $index) {
+    <li class="item-list__row">
+      <span class="item-list__order">#{{ item.purchaseOrderId }}</span>
+      <span class="item-list__name">{{ item.itemName }}</span>
+      <span class="item-list__quantity">
+        {{ item.quantity | number }}
+        <span class="item-list__unit">qty</span>
+      </span>
+    </li>
+  } @empty {
+    <li class="item-list__empty">No items yet.</li>
+  }
+</ul>

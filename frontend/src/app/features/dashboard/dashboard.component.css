@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.page-body {
+  display: grid;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.card {
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.empty-card {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.empty-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.empty-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.empty-card .btn {
+  margin-top: 6px;
+  text-decoration: none;
+}
+
+/* Three widgets side by side on desktop, stacking as the screen narrows. */
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.widget {
+  min-width: 0;
+}
+
+.widget__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.widget__title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+}
+
+.widget__badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--color-readonly);
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .page-body {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}

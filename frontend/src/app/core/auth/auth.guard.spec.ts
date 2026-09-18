@@ -20,7 +20,7 @@ describe('auth guards', () => {
     });
 
     const result = TestBed.runInInjectionContext(() =>
-      guard({} as ActivatedRouteSnapshot, { url: '/purchase-bill' } as RouterStateSnapshot),
+      guard({} as ActivatedRouteSnapshot, { url: '/dashboard' } as RouterStateSnapshot),
     );
     return result instanceof UrlTree ? TestBed.inject(Router).serializeUrl(result) : (result as boolean);
   }
@@ -34,6 +34,6 @@ describe('auth guards', () => {
   });
 
   it('sends signed-in users from the login page to the purchase bill', () => {
-    expect(runGuard(guestGuard, true)).toBe('/purchase-bill');
+    expect(runGuard(guestGuard, true)).toBe('/dashboard');
   });
 });

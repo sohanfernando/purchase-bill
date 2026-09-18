@@ -114,9 +114,10 @@ builder.Services.AddOptions<ExternalLoginOptions>()
     .ValidateOnStart();
 
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
-builder.Services.AddScoped<IPurchaseBillRepository, PurchaseBillRepository>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
 builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddScoped<IPurchaseBillService, PurchaseBillService>();
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddHttpClient<IExternalLoginService, ExternalLoginService>((serviceProvider, client) =>
 {

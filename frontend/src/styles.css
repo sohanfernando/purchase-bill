@@ -2,6 +2,8 @@
   --color-primary: #2f80d1;
   --color-primary-dark: #2459a6;
   --color-success: #2e9d5b;
+  --color-success-bg: #e7f5ed;
+  --color-success-ink: #1c6b40;
   --color-danger: #c62828;
   --color-danger-bg: #fdecec;
   --color-text: #1f2937;
@@ -85,6 +87,11 @@ app-form-field input[readonly] {
 .btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 .btn--success {

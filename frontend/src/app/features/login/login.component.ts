@@ -56,7 +56,7 @@ export class LoginComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => void this.router.navigateByUrl('/purchase-bill'),
+        next: () => void this.router.navigateByUrl('/dashboard'),
         error: (error: unknown) =>
           this.errorMessage.set(toApiError(error, 'Login failed. Please try again.').message),
       });

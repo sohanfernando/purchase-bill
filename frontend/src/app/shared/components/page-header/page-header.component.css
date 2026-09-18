@@ -1,0 +1,111 @@
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 14px 24px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+  color: #ffffff;
+}
+
+.page-header__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.page-header__title svg {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.page-header__nav {
+  display: flex;
+  gap: 6px;
+  order: 3;
+  width: 100%;
+}
+
+.page-header__nav a {
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: rgb(255 255 255 / 12%);
+}
+
+.page-header__nav a:hover {
+  background: rgb(255 255 255 / 22%);
+}
+
+.page-header__nav a.is-active {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.page-header__nav a:focus-visible,
+.page-header__user .btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.page-header__user {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.page-header__email {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* On wide screens the navigation sits in the middle of the bar. */
+@media (min-width: 900px) {
+  .page-header__nav {
+    order: 0;
+    width: auto;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .page-header {
+    padding: 12px 16px;
+  }
+
+  .page-header__email {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  h1 {
+    font-size: 1.05rem;
+  }
+
+  p {
+    display: none;
+  }
+}

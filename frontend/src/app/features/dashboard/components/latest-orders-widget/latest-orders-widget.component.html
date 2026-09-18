@@ -1,0 +1,27 @@
+<div class="table-wrapper">
+  <table>
+    <caption class="visually-hidden">Latest purchase orders</caption>
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col" class="numeric">Net Amount</th>
+        <th scope="col" class="numeric">No. of Items</th>
+        <th scope="col">Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (order of orders(); track order.id) {
+        <tr>
+          <td class="cell--id">#{{ order.id }}</td>
+          <td class="numeric cell--amount">{{ order.netAmount | number: '1.2-2' }}</td>
+          <td class="numeric">{{ order.itemCount | number }}</td>
+          <td class="cell--date">{{ order.createdAtUtc | date: 'dd MMM, HH:mm' }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="empty" colspan="4">No purchase orders yet.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

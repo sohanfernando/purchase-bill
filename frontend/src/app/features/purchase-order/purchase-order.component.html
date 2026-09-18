@@ -1,0 +1,196 @@
+<app-page-header
+  title="Purchase Order"
+  subtitle="Add items, then save the order"
+  [email]="userEmail()"
+  (logout)="logout()"
+/>
+
+<main class="page-body">
+  <section class="card items-card" aria-labelledby="items-heading">
+    <h2 id="items-heading" class="card__title">Items</h2>
+
+    @if (loadError(); as error) {
+      <app-alert class="page-alert" [message]="error" actionLabel="Retry" (action)="loadPageData()" />
+    }
+
+    <form class="item-form" [formGroup]="form" (ngSubmit)="addLine()" novalidate>
+      <app-form-field
+        class="item-form__wide"
+        label="Item"
+        fieldId="item-name"
+        [control]="form.controls.itemName"
+        required
+      >
+        <app-autocomplete
+          inputId="item-name"
+          formControlName="itemName"
+          placeholder="Search item"
+          [options]="itemOptions()"
+        />
+      </app-form-field>
+
+      <app-form-field
+        class="item-form__wide"
+        label="Batch"
+        fieldId="batch"
+        [control]="form.controls.batchLocationCode"
+        required
+      >
+        <select id="batch" formControlName="batchLocationCode">
+          <option value="">
+            @if (isLoading()) {
+              Loading locations...
+            } @else if (locations().length === 0) {
+              No locations available
+            } @else {
+              Select a batch
+            }
+          </option>
+          @for (location of locations(); track location.locationCode) {
+            <option [value]="location.locationCode">{{ location.locationName }}</option>
+          }
+        </select>
+      </app-form-field>
+
+      <app-form-field
+        label="Standard Cost"
+        fieldId="standard-cost"
+        [control]="form.controls.standardCost"
+        required
+      >
+        <input
+          id="standard-cost"
+          type="number"
+          inputmode="decimal"
+          min="0.01"
+          step="0.01"
+          placeholder="0.00"
+          formControlName="standardCost"
+        />
+      </app-form-field>
+
+      <app-form-field
+        label="Standard Price"
+        fieldId="standard-price"
+        [control]="form.controls.standardPrice"
+        required
+      >
+        <input
+          id="standard-price"
+          type="number"
+          inputmode="decimal"
+          min="0.01"
+          step="0.01"
+          placeholder="0.00"
+          formControlName="standardPrice"
+        />
+      </app-form-field>
+
+      <app-form-field class="form-field--readonly" label="Margin" fieldId="margin">
+        <input id="margin" type="text" readonly [value]="lineAmounts().margin | number: '1.2-2'" />
+      </app-form-field>
+
+      <app-form-field label="Qty" fieldId="quantity" [control]="form.controls.quantity" required>
+        <input
+          id="quantity"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          step="1"
+          placeholder="0"
+          formControlName="quantity"
+        />
+      </app-form-field>
+
+      <app-form-field label="Free Qty" fieldId="free-quantity" [control]="form.controls.freeQuantity">
+        <input
+          id="free-quantity"
+          type="number"
+          inputmode="numeric"
+          min="0"
+          step="1"
+          placeholder="0"
+          formControlName="freeQuantity"
+        />
+      </app-form-field>
+
+      <app-form-field label="Discount %" fieldId="discount" [control]="form.controls.discountPercent">
+        <input
+          id="discount"
+          type="number"
+          inputmode="decimal"
+          min="0"
+          max="100"
+          step="0.01"
+          placeholder="0.00"
+          formControlName="discountPercent"
+        />
+      </app-form-field>
+
+      <app-form-field class="form-field--readonly" label="Total Cost" fieldId="total-cost">
+        <input id="total-cost" type="text" readonly [value]="lineAmounts().totalCost | number: '1.2-2'" />
+      </app-form-field>
+
+      <app-form-field class="form-field--readonly" label="Total Selling" fieldId="total-selling">
+        <input
+          id="total-selling"
+          type="text"
+          readonly
+          [value]="lineAmounts().totalSelling | number: '1.2-2'"
+        />
+      </app-form-field>
+
+      <div class="item-form__actions">
+        <button type="submit" class="btn btn--success" [disabled]="isLoading()">
+          <span>Add</span>
+          <span aria-hidden="true">+</span>
+        </button>
+      </div>
+    </form>
+
+    @if (saveError(); as error) {
+      <app-alert class="page-alert" [message]="error" />
+    }
+
+    @if (savedOrder(); as order) {
+      <app-alert
+        class="page-alert"
+        variant="success"
+        [message]="
+          'Order #' +
+          order.id +
+          ' saved with ' +
+          order.itemCount +
+          ' item(s), net amount ' +
+          (order.netAmount | number: '1.2-2')
+        "
+        actionLabel="View dashboard"
+        (action)="goToDashboard()"
+      />
+    }
+
+    <app-purchase-items-table [lines]="lines()" (remove)="removeLine($event)" />
+
+    <div class="order-actions">
+      <button type="button" class="btn btn--primary" [disabled]="!canSave()" (click)="saveOrder()">
+        @if (isSaving()) {
+          <app-spinner size="small" label="Saving order" />
+          <span>Saving...</span>
+        } @else {
+          <span>Save order</span>
+        }
+      </button>
+      <span class="order-actions__hint">
+        {{ summary().totalItems }} item(s) will be saved as one purchase order.
+      </span>
+    </div>
+  </section>
+
+  <aside class="card summary-card">
+    <app-item-summary
+      [totalItems]="summary().totalItems"
+      [totalQuantity]="summary().totalQuantity"
+      [netAmount]="summary().netAmount"
+    />
+  </aside>
+</main>

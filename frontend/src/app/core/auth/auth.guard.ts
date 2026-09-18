@@ -11,5 +11,5 @@ export const authGuard: CanActivateFn = () => {
 /** Keeps signed-in users away from the login page. */
 export const guestGuard: CanActivateFn = () => {
   const router = inject(Router);
-  return inject(AuthService).isAuthenticated() ? router.createUrlTree(['/purchase-bill']) : true;
+  return inject(AuthService).isAuthenticated() ? router.createUrlTree(['/dashboard']) : true;
 };

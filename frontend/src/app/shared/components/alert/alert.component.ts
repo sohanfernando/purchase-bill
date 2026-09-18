@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-/** Error message banner with an optional action button (for example "Retry"). */
+/** Message banner with an optional action button, e.g. "Retry". */
 @Component({
   selector: 'app-alert',
   template: `
-    <div class="alert" role="alert">
+    <div class="alert" [class.alert--success]="variant() === 'success'" role="alert">
       <span>{{ message() }}</span>
       @if (actionLabel(); as label) {
         <button type="button" class="alert__action" (click)="action.emit()">{{ label }}</button>
@@ -29,6 +29,12 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
       font-size: 0.875rem;
     }
 
+    .alert--success {
+      border-left-color: var(--color-success);
+      background: var(--color-success-bg);
+      color: var(--color-success-ink);
+    }
+
     .alert__action {
       padding: 0;
       border: 0;
@@ -44,5 +50,6 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 export class AlertComponent {
   readonly message = input.required<string>();
   readonly actionLabel = input<string>();
+  readonly variant = input<'error' | 'success'>('error');
   readonly action = output<void>();
 }

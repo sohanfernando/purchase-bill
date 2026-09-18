@@ -1,0 +1,27 @@
+<header class="page-header">
+  <div class="page-header__title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"
+      focusable="false">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-5M12 8h.01" />
+    </svg>
+    <div>
+      <h1>{{ title() }}</h1>
+      @if (subtitle()) {
+        <p>{{ subtitle() }}</p>
+      }
+    </div>
+  </div>
+
+  <nav class="page-header__nav" aria-label="Main">
+    <a routerLink="/dashboard" routerLinkActive="is-active">Dashboard</a>
+    <a routerLink="/purchase-order" routerLinkActive="is-active">Purchase Order</a>
+  </nav>
+
+  <div class="page-header__user">
+    @if (email(); as userEmail) {
+      <span class="page-header__email" [title]="userEmail">{{ userEmail }}</span>
+    }
+    <button type="button" class="btn btn--light" (click)="logout.emit()">Logout</button>
+  </div>
+</header>
