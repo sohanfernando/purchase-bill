@@ -17,24 +17,45 @@ GET {{backend_HostAddress}}/api/locations
 Authorization: Bearer {{accessToken}}
 
 ### Item names for the autocomplete
-GET {{backend_HostAddress}}/api/purchase-bills/item-options
+GET {{backend_HostAddress}}/api/purchase-orders/item-options
 Authorization: Bearer {{accessToken}}
 
-### Purchase bill items
-GET {{backend_HostAddress}}/api/purchase-bills/items
-Authorization: Bearer {{accessToken}}
-
-### Add a purchase bill item (use a Location_Code returned by /api/locations)
-POST {{backend_HostAddress}}/api/purchase-bills/items
+### Save a purchase order (use Location_Code values returned by /api/locations)
+POST {{backend_HostAddress}}/api/purchase-orders
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "itemName": "Mango",
-  "batchLocationCode": "EZCMP1/EZLOC-19",
-  "standardCost": 100,
-  "standardPrice": 150,
-  "quantity": 5,
-  "freeQuantity": 0,
-  "discountPercent": 20
+  "items": [
+    {
+      "itemName": "Mango",
+      "batchLocationCode": "EZCMP1/EZLOC-19",
+      "standardCost": 100,
+      "standardPrice": 150,
+      "quantity": 5,
+      "freeQuantity": 1,
+      "discountPercent": 20
+    },
+    {
+      "itemName": "Apple",
+      "batchLocationCode": "EZCMP1/EZLOC-16",
+      "standardCost": 50,
+      "standardPrice": 80,
+      "quantity": 10,
+      "freeQuantity": 0,
+      "discountPercent": 0
+    }
+  ]
 }
+
+### Recent orders
+GET {{backend_HostAddress}}/api/purchase-orders?take=10
+Authorization: Bearer {{accessToken}}
+
+### One order with its lines
+GET {{backend_HostAddress}}/api/purchase-orders/1
+Authorization: Bearer {{accessToken}}
+
+### Dashboard widgets (latest orders, oldest items, quantity by item)
+GET {{backend_HostAddress}}/api/dashboard
+Authorization: Bearer {{accessToken}}

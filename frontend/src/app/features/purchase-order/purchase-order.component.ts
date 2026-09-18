@@ -1,5 +1,13 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,6 +30,7 @@ import {
   PurchaseOrderItemRequest,
 } from './models/purchase-order.models';
 import { PurchaseOrderService } from './services/purchase-order.service';
+import { clearOrderDraft, readOrderDraft, writeOrderDraft } from './utils/order-draft-storage';
 import { calculateLineAmounts, summarizeLines } from './utils/purchase-order-calculations';
 
 const MAX_QUANTITY = 1_000_000;
@@ -75,8 +84,11 @@ export class PurchaseOrderComponent {
   readonly itemOptions = signal<string[]>([]);
   readonly locations = signal<UserLocation[]>([]);
 
-  /** Lines added but not saved yet. The order exists only in the browser until Save is pressed. */
-  readonly lines = signal<OrderLineDraft[]>([]);
+  /**
+   * Lines added but not saved yet. The order exists only in the browser until Save is pressed,
+   * so it is kept in sessionStorage and restored here, and a refresh does not lose it.
+   */
+  readonly lines = signal<OrderLineDraft[]>(readOrderDraft());
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
@@ -84,7 +96,8 @@ export class PurchaseOrderComponent {
   readonly saveError = signal<string | null>(null);
   readonly savedOrder = signal<PurchaseOrder | null>(null);
 
-  private nextTempId = 1;
+  /** Continues after the restored lines, so row ids stay unique across a refresh. */
+  private nextTempId = Math.max(0, ...this.lines().map((line) => line.tempId)) + 1;
 
   readonly summary = computed(() => summarizeLines(this.lines()));
   readonly canSave = computed(() => this.lines().length > 0 && !this.isSaving());
@@ -132,6 +145,9 @@ export class PurchaseOrderComponent {
 
   constructor() {
     this.loadPageData();
+
+    // Every change to the order being built is written back to the tab's storage.
+    effect(() => writeOrderDraft(this.lines()));
   }
 
   loadPageData(): void {
@@ -241,6 +257,8 @@ export class PurchaseOrderComponent {
   }
 
   logout(): void {
+    // The draft belongs to the signed-in user, so it leaves with them.
+    clearOrderDraft();
     this.authService.logout();
     void this.router.navigate(['/login']);
   }
